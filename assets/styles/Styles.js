@@ -29,7 +29,8 @@ export default StyleSheet.create({
     borderWidth: 1,
     borderColor: 'mediumpurple',
     borderRadius: 3,
-    marginTop: 2
+    marginTop: 2,
+    fontSize: 16
   },
 
   labelStyle: {
@@ -40,7 +41,8 @@ export default StyleSheet.create({
     fontSize: 12,
     color: 'red',
     fontStyle: 'italic',
-    marginBottom: 5
+    marginBottom: 5,
+    height: 15
   },
 
   buttonStyle: {
