@@ -9,18 +9,19 @@ class Form extends React.Component {
     super(props);
     this.state = {
       email: '',
-      password: ''
+      password: '',
+      isPressed: false,
+      disabled: false
     }
   }
 
   onSignin = () => {
+    this.state.isPressed = true;
     this.validate();
+    this.state.isPressed = false;
   }
 
   handleUserInput = ()=>{
-    // SHOULD empty warning field which generates the action
-    // FOR NOW empty both warnings
-    this.emptyWarning();
     this.validate();
   }
 
@@ -30,27 +31,44 @@ class Form extends React.Component {
   }
 
   validate = () => {
-    let email = this.state.email;
-    let password = this.state.password;
+    const email = this.state.email;
+    const password = this.state.password;
+    const isPressed = this.state.isPressed;
 
     //check if valid email
     isEmailValid = email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
     //check if valid password length
     isPasswordValid = (password.length>=6 && password.length<=12);
     //check if email field is empty
-    let isEmailEmpty = (email.length == 0);
+    const isEmailEmpty = (email.length == 0);
     //check if password is empty
-    let isPasswordEmpty = (password.length == 0);
+    const isPasswordEmpty = (password.length == 0);
 
-    if ( isEmailEmpty && !isPasswordEmpty ){ //email purposely left empty
+    this.state.disabled = true;
+
+    if (isEmailEmpty && !isPasswordEmpty ){ //email purposely left empty
       this._email.setNativeProps( { text: 'Email address is empty' });
     } if (!isEmailValid && !isEmailEmpty){ //invalid email syntax
       this._email.setNativeProps( { text: 'Invalid email address' } );
-    } if(!isPasswordValid && !isPasswordEmpty ){ //invalid password syntax
+    } if (!isPasswordValid && !isPasswordEmpty ){ //invalid password syntax
       this._password.setNativeProps( { text: 'Password must be 6-12 characters' } );
     } if(isPasswordValid) {
       this._password.setNativeProps( { text: '' } );
+    } if (isPasswordValid && isEmailValid ) {
+      this.emptyWarning();
+      this.state.disabled = false;
+      if (isPressed) {
+        Alert.alert("Congrats! Successful Sign in");
+        this.reset();
+      }
     }
+  }
+
+  reset(){
+    this._email.setNativeProps( { text: '' } );
+    this._password.setNativeProps( { text: '' } );
+    this.state.isPressed=false;
+    this.state.disabled=false;
   }
   render(){
     return (
@@ -81,13 +99,13 @@ class Form extends React.Component {
             placeholder="Input password"
             secureTextEntry={true}
             value={this.state.password}
-            onBlur={this.handleUserInput.bind(this)}
+            onChange={this.handleUserInput.bind(this)}
             onChangeText={(password) => this.setState({password})}
           />
 
           <TextInput style={styles.warningStyle} editable={false} ref={component => this._password = component}/>
 
-          <TouchableOpacity onPress={this.onSignin}>
+          <TouchableOpacity onPress={this.onSignin} disabled={this.state.disabled}>
             <Text style={styles.buttonStyle}>Sign In</Text>
           </TouchableOpacity>
         </View>
