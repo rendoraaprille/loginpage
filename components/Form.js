@@ -22,6 +22,7 @@ class Form extends React.Component {
   }
 
   handleUserInput = ()=>{
+    this.emptyWarning();
     this.validate();
   }
 
@@ -65,8 +66,7 @@ class Form extends React.Component {
   }
 
   reset(){
-    this._email.setNativeProps( { text: '' } );
-    this._password.setNativeProps( { text: '' } );
+    this.emptyWarning();
     this.state.isPressed=false;
     this.state.disabled=false;
   }
@@ -87,7 +87,7 @@ class Form extends React.Component {
             value={this.state.email}
             // onChange={this.onInputChange.bind(this)}
             onChangeText={(email) => this.setState({email})}
-            onBlur={this.handleUserInput.bind(this)}
+            onChange={this.handleUserInput.bind(this)}
             // onChange={(event) => this.handleUserInput(event)}
           />
           <TextInput style={styles.warningStyle} editable={false} ref={component => this._email = component}/>
